@@ -1,4 +1,3 @@
-/* eslint-disable semi */
 module.exports = {
   root: true,
   extends: '@react-native-community',
@@ -6,7 +5,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   overrides: [
     {
-      files: ['*.ts', '*.tsx', '.js', '.jsx'],
+      files: ['*.ts', '*.tsx', '*.js', '*.jsx'],
       rules: {
         '@typescript-eslint/no-shadow': ['error'],
         'no-shadow': 'off',
