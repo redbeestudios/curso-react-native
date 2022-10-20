@@ -8,13 +8,15 @@
  * @format
  */
 
-import React, {type PropsWithChildren} from 'react'
+import React, { useCallback, useState, type PropsWithChildren } from 'react'
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   useColorScheme,
   View,
 } from 'react-native'
@@ -26,12 +28,13 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen'
+import NativeHelloWorld from './HelloTurboModules/js/NativeHelloWorld'
 
 const Section: React.FC<
   PropsWithChildren<{
     title: string
   }>
-> = ({children, title}) => {
+> = ({ children, title }) => {
   const isDarkMode = useColorScheme() === 'dark'
   return (
     <View style={styles.sectionContainer}>
@@ -58,11 +61,16 @@ const Section: React.FC<
 }
 
 const App = () => {
+  const [name, setName] = useState('')
   const isDarkMode = useColorScheme() === 'dark'
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   }
+
+  const greet = useCallback(() => {
+    console.log(NativeHelloWorld?.greet(name))
+  }, [name])
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -87,6 +95,17 @@ const App = () => {
           </Section>
           <Section title="Debug">
             <DebugInstructions />
+          </Section>
+          <Section title="Test TurboModules">
+            <View style={styles.turbomodules}>
+              <TextInput
+                placeholder="Nombre"
+                style={styles.turbomodulesText}
+                onChangeText={setName}
+                value={name}
+              />
+              <Button onPress={greet} title="Greet" />
+            </View>
           </Section>
           <Section title="Learn More">
             Read the docs to discover what to do next:
@@ -114,6 +133,15 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  turbomodules: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  turbomodulesText: {
+    flex: 1,
   },
 })
 

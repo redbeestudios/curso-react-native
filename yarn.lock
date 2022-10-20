@@ -3474,6 +3474,10 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+"hello-turbo-modules@link:./HelloTurboModules":
+  version "0.0.0"
+  uid ""
+
 hermes-estree@0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/hermes-estree/-/hermes-estree-0.8.0.tgz#530be27243ca49f008381c1f3e8b18fb26bf9ec0"
