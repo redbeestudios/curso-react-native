@@ -60,7 +60,7 @@ const Section: React.FC<
   )
 }
 
-const App = () => {
+const RNSampleApp = () => {
   const [name, setName] = useState('')
   const isDarkMode = useColorScheme() === 'dark'
 
@@ -145,4 +145,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default App
+export default RNSampleApp
