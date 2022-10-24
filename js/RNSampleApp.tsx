@@ -28,7 +28,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen'
-import NativeHelloWorld from './HelloTurboModules/js/NativeHelloWorld'
+import NativeHelloWorld from '../HelloTurboModules/js/NativeHelloWorld'
 
 const Section: React.FC<
   PropsWithChildren<{
