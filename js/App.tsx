@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import React, { FunctionComponent, useCallback, useState } from 'react'
 import { FlatList, ListRenderItem, SafeAreaView, TextInput } from 'react-native'
 import { v4 as uuid } from 'uuid'
 import { ProductCard } from './components'
