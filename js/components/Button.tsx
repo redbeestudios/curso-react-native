@@ -13,15 +13,17 @@ export interface ButtonProps {
   children: string | ReactElement
   onPress: () => void
   style?: StyleProp<ViewStyle>
+  fontSize?: number
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
   children,
   onPress,
   style,
+  fontSize,
 }) => {
   if (typeof children === 'string') {
-    children = <Text style={styles.text}>{children}</Text>
+    children = <Text style={[styles.text, { fontSize }]}>{children}</Text>
   }
 
   return (

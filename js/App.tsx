@@ -4,14 +4,16 @@ import {
   FlatList,
   ListRenderItem,
   SafeAreaView,
+  StyleProp,
   StyleSheet,
+  Text,
   TextInput,
   TextStyle,
   View,
   ViewStyle,
 } from 'react-native'
 import { v4 as uuid } from 'uuid'
-import { ProductCard } from './components'
+import { Button, ProductCard } from './components'
 import { extractKeyFromEntity, Product } from './domain'
 import { useFilteredProducts, useProductIndex } from './hooks'
 
@@ -34,6 +36,13 @@ export const App: FunctionComponent = () => {
     [],
   )
 
+  const createProduct = useCallback(() => {
+    setProducts(prev => [
+      { name: search, description: '', id: uuid() },
+      ...prev,
+    ])
+  }, [search])
+
   const renderProduct: ListRenderItem<Product> = useCallback(
     ({ item }) => (
       <ProductCard
@@ -45,8 +54,16 @@ export const App: FunctionComponent = () => {
     [deleteProduct],
   )
 
+  const screenStyles: StyleProp<ViewStyle> = [styles.screen]
+  const productListStyles: StyleProp<ViewStyle> = [styles.productList]
+
+  if (!filteredProducts.length) {
+    screenStyles.push(styles.screenEmpty)
+    productListStyles.push(styles.productListEmpty)
+  }
+
   return (
-    <SafeAreaView style={styles.screen}>
+    <SafeAreaView style={screenStyles}>
       <View style={styles.header}>
         <TextInput
           style={styles.search}
@@ -57,10 +74,24 @@ export const App: FunctionComponent = () => {
       </View>
       <FlatList<Product>
         renderItem={renderProduct}
-        contentContainerStyle={styles.productList}
+        contentContainerStyle={productListStyles}
         data={filteredProducts}
         keyExtractor={extractKeyFromEntity}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyLabel}>
+              No product named <Text style={styles.emptyTerm}>{search}</Text>{' '}
+              found
+            </Text>
+            <Button
+              onPress={createProduct}
+              style={styles.emptyButton}
+              fontSize={18}>
+              Create it
+            </Button>
+          </View>
+        }
       />
     </SafeAreaView>
   )
@@ -68,14 +99,24 @@ export const App: FunctionComponent = () => {
 
 const styles = StyleSheet.create<{
   screen: ViewStyle
+  screenEmpty: ViewStyle
   productCard: ViewStyle
   productList: ViewStyle
+  productListEmpty: ViewStyle
   header: ViewStyle
   search: TextStyle
+  emptyContainer: ViewStyle
+  emptyLabel: TextStyle
+  emptyTerm: TextStyle
+  emptyButton: ViewStyle
 }>({
-  screen: { backgroundColor: '#EEE' },
+  screen: { backgroundColor: '#EEE', flex: 1 },
+  screenEmpty: { backgroundColor: '#FFF' },
   productCard: { margin: 10 },
   productList: { paddingBottom: 100 },
+  productListEmpty: {
+    paddingBottom: 0,
+  },
   header: {
     backgroundColor: '#FFF',
     borderBottomColor: '#EEE',
@@ -89,5 +130,21 @@ const styles = StyleSheet.create<{
     marginHorizontal: 20,
     paddingHorizontal: 20,
     paddingVertical: 6,
+  },
+  emptyContainer: {
+    backgroundColor: '#FFF',
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: '50%',
+  },
+  emptyLabel: {
+    color: '#000',
+    fontSize: 18,
+  },
+  emptyTerm: {
+    fontWeight: 'bold',
+  },
+  emptyButton: {
+    marginTop: 20,
   },
 })
