@@ -1,8 +1,13 @@
-import { faker } from '@faker-js/faker'
-import React, { FunctionComponent, useCallback, useState } from 'react'
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import {
   FlatList,
   ListRenderItem,
+  NativeModules,
   SafeAreaView,
   StyleProp,
   StyleSheet,
@@ -12,36 +17,30 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
-import { v4 as uuid } from 'uuid'
 import { Button, ProductCard } from './components'
 import { extractKeyFromEntity, Product } from './domain'
 import { useFilteredProducts, useProductIndex } from './hooks'
-
-const INITIAL_PRODUCTS: Product[] = Array.from({ length: 10 }).map(() => ({
-  id: uuid(),
-  name: faker.commerce.product(),
-  description: faker.commerce.productDescription(),
-}))
+import { useProducts } from './hooks/product'
 
 export const App: FunctionComponent = () => {
-  const [products, setProducts] = useState(INITIAL_PRODUCTS)
+  const products = useProducts()
   const [search, setSearch] = useState('')
 
   const productIndex = useProductIndex(products)
   const filteredProducts = useFilteredProducts(productIndex, products, search)
 
   const deleteProduct = useCallback(
-    (product: Product) =>
-      setProducts(prev => prev.filter(p => p.id !== product.id)),
+    (product: Product) => {},
+    // setProducts(prev => prev.filter(p => p.id !== product.id)),
     [],
   )
 
   const createProduct = useCallback(() => {
-    setProducts(prev => [
-      { name: search, description: '', id: uuid() },
-      ...prev,
-    ])
-  }, [search])
+    // setProducts(prev => [
+    //   { name: search, description: '', id: uuid() },
+    //   ...prev,
+    // ])
+  }, [])
 
   const renderProduct: ListRenderItem<Product> = useCallback(
     ({ item }) => (
