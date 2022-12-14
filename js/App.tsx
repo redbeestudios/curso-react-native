@@ -1,13 +1,7 @@
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import React, { FunctionComponent, useCallback, useState } from 'react'
 import {
   FlatList,
   ListRenderItem,
-  NativeModules,
   SafeAreaView,
   StyleProp,
   StyleSheet,
@@ -21,26 +15,14 @@ import { Button, ProductCard } from './components'
 import { extractKeyFromEntity, Product } from './domain'
 import { useFilteredProducts, useProductIndex } from './hooks'
 import { useProducts } from './hooks/product'
+import { v4 as uuid } from 'uuid'
 
 export const App: FunctionComponent = () => {
-  const products = useProducts()
+  const { products, createProduct, deleteProduct } = useProducts()
   const [search, setSearch] = useState('')
 
   const productIndex = useProductIndex(products)
   const filteredProducts = useFilteredProducts(productIndex, products, search)
-
-  const deleteProduct = useCallback(
-    (product: Product) => {},
-    // setProducts(prev => prev.filter(p => p.id !== product.id)),
-    [],
-  )
-
-  const createProduct = useCallback(() => {
-    // setProducts(prev => [
-    //   { name: search, description: '', id: uuid() },
-    //   ...prev,
-    // ])
-  }, [])
 
   const renderProduct: ListRenderItem<Product> = useCallback(
     ({ item }) => (
@@ -52,6 +34,10 @@ export const App: FunctionComponent = () => {
     ),
     [deleteProduct],
   )
+
+  const emptyAction = useCallback(() => {
+    createProduct({ name: search, description: '', id: uuid() })
+  }, [createProduct, search])
 
   const screenStyles: StyleProp<ViewStyle> = [styles.screen]
   const productListStyles: StyleProp<ViewStyle> = [styles.productList]
@@ -84,7 +70,7 @@ export const App: FunctionComponent = () => {
               found
             </Text>
             <Button
-              onPress={createProduct}
+              onPress={emptyAction}
               style={styles.emptyButton}
               fontSize={18}>
               Create it

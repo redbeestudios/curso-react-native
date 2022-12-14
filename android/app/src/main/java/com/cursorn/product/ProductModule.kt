@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.facebook.react.bridge.*
 
-class ProductModule (val context: ReactApplicationContext) :
+class ProductModule (private val context: ReactApplicationContext) :
     ReactContextBaseJavaModule(context) {
     override fun getName(): String {
         return "ProductModule"
@@ -18,22 +18,12 @@ class ProductModule (val context: ReactApplicationContext) :
     fun initializeProducts(products: ReadableArray) {
         val productsToStore = mutableListOf<Product>()
         for (i in 0 until products.size()) {
-            val productMap = products.getMap(i)
-            productsToStore.add(Product(
-                id = productMap.getString("id")!!,
-                name = productMap.getString("name")!!,
-                description = productMap.getString("description")
-            ))
+            readableMapToProduct(products.getMap(i))
+                .also { productsToStore.add(it) }
         }
 
         this.products = productsToStore
-
-        with (preferences.edit()) {
-            putString(PRODUCT_STORAGE_KEY, productsToStore.fold("") { acc, product ->
-                acc + "${product.id};${product.name};${product.description}\n"
-            })
-            apply()
-        }
+        storeProducts(productsToStore)
     }
 
     @ReactMethod
@@ -56,8 +46,28 @@ class ProductModule (val context: ReactApplicationContext) :
             Product(id = parts[0], name = parts[1], description = parts[2])
         }
 
+        this.products = products.toMutableList()
+
         promise.resolve(productListToReadableArray(products))
     }
+
+    @ReactMethod
+    fun deleteProduct(id: String) {
+        products?.removeAll { product -> product.id == id }
+        products?.also { storeProducts(it) }
+    }
+
+    @ReactMethod
+    fun createProduct(productMap: ReadableMap) {
+        readableMapToProduct(productMap).also { products?.add(it) }
+        products?.also { storeProducts(it) }
+    }
+
+    private fun readableMapToProduct(map: ReadableMap): Product =Product(
+        id = map.getString("id")!!,
+        name = map.getString("name")!!,
+        description = map.getString("description")
+    )
 
     private fun productListToReadableArray(productList: List<Product>): ReadableArray {
         val result = Arguments.createArray()
@@ -71,6 +81,15 @@ class ProductModule (val context: ReactApplicationContext) :
         }
 
         return result
+    }
+
+    private fun storeProducts(productsToStore: List<Product>) {
+        with (preferences.edit()) {
+            putString(PRODUCT_STORAGE_KEY, productsToStore.fold("") { acc, product ->
+                acc + "${product.id};${product.name};${product.description}\n"
+            })
+            apply()
+        }
     }
 
     companion object {

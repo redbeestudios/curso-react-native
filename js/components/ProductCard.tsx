@@ -13,7 +13,7 @@ import { FONT_COLOR } from './const'
 
 export interface ProductCardProps {
   product: Product
-  onDelete?: (product: Product) => void
+  onDelete?: (id: string) => void
   style?: StyleProp<ViewStyle>
 }
 
@@ -23,7 +23,7 @@ export const ProductCard: FunctionComponent<ProductCardProps> = ({
   style,
 }) => {
   const deleteProduct = useCallback(
-    () => onDelete?.(product),
+    () => onDelete?.(product.id),
     [onDelete, product],
   )
 
