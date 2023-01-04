@@ -15,11 +15,13 @@ export interface ProductCardProps {
   product: Product
   onDelete?: (id: string) => void
   style?: StyleProp<ViewStyle>
+  onPressName?: () => void
 }
 
 export const ProductCard: FunctionComponent<ProductCardProps> = ({
   product,
   onDelete,
+  onPressName,
   style,
 }) => {
   const deleteProduct = useCallback(
@@ -29,7 +31,9 @@ export const ProductCard: FunctionComponent<ProductCardProps> = ({
 
   return (
     <View style={[styles.container, style]}>
-      <Text style={styles.name}>{product.name}</Text>
+      <Text style={styles.name} onPress={onPressName}>
+        {product.name}
+      </Text>
       <Text style={styles.description}>{product.description}</Text>
       {onDelete ? (
         <Button style={styles.deleteButton} onPress={deleteProduct}>
